@@ -14,13 +14,15 @@ namespace CheatMenuMod
     private readonly CheatMenuMod cheatMenuMod;
     private readonly List<Cheat> cheats;
     private readonly List<ClickableComponent> buttons;
+    private ClickableComponent? hoveredButton;
 
     /// <summary>
     /// Initialise the cheat menu.
     /// </summary>
     /// <param name="cheatMenuMod"></param>
     /// <param name="cheats"></param>
-    public CheatMenu(CheatMenuMod cheatMenuMod, List<Cheat> cheats) : base(Game1.viewport.Width / 2 - 200, Game1.viewport.Height / 2 - 200, 400, 400, true)
+    public CheatMenu(CheatMenuMod cheatMenuMod, List<Cheat> cheats)
+        : base(Game1.viewport.Width / 2 - 200, Game1.viewport.Height / 2 - 200, 400, 400, true)
     {
       this.cheatMenuMod = cheatMenuMod;
       this.cheats = cheats;
@@ -30,8 +32,9 @@ namespace CheatMenuMod
 
       foreach (var cheat in cheats)
       {
-        buttons.Add(new ClickableComponent(new Rectangle(xPositionOnScreen + 100, yPositionOnScreen + yOffset, 200, 50), cheat.Name));
-        yOffset += 60;
+        // Adjust the size of the buttons to be smaller
+        buttons.Add(new ClickableComponent(new Rectangle(xPositionOnScreen + 25, yPositionOnScreen + yOffset, 150, 40), cheat.Name));
+        yOffset += 50; // Adjust the offset to prevent overlap
       }
     }
 
@@ -46,14 +49,16 @@ namespace CheatMenuMod
       // Draw the background.
       drawTextureBox(spriteBatch, xPositionOnScreen, yPositionOnScreen, width, height, Color.White);
 
-      //Draw the title.
+      // Draw the title.
       SpriteText.drawString(spriteBatch, "Cheat Menu", xPositionOnScreen + 100, yPositionOnScreen + 50);
 
-      //Draw the buttons;
+      // Draw the buttons;
       foreach (var button in buttons)
       {
-        drawTextureBox(spriteBatch, button.bounds.X, button.bounds.Y, button.bounds.Width, button.bounds.Height, Color.BlueViolet);
-        SpriteText.drawString(spriteBatch, button.name, button.bounds.X + 100, button.bounds.Y + 25);
+        Color buttonColor = button == hoveredButton ? Color.LightBlue : Color.BlueViolet;
+        drawTextureBox(spriteBatch, button.bounds.X, button.bounds.Y, button.bounds.Width, button.bounds.Height, buttonColor);
+        // Adjust the text position to prevent overlap
+        SpriteText.drawString(spriteBatch, button.name, button.bounds.X + 10, button.bounds.Y + 10);
       }
     }
 
@@ -67,6 +72,21 @@ namespace CheatMenuMod
         if (button.containsPoint(x, y))
         {
           cheats.First(cheat => cheat.Name == button.name)?.Activate();
+        }
+      }
+    }
+
+    public override void performHoverAction(int x, int y)
+    {
+      base.performHoverAction(x, y);
+
+      hoveredButton = null;
+      foreach (var button in buttons)
+      {
+        if (button.containsPoint(x, y))
+        {
+          hoveredButton = button;
+          break;
         }
       }
     }
