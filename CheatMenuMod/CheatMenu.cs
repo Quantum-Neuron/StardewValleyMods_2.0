@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CheatMenuMod.Cheats;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 using StardewValley.BellsAndWhistles;
@@ -99,7 +100,23 @@ namespace CheatMenuMod
       {
         if (button.containsPoint(x, y))
         {
-          cheats.First(cheat => cheat.Name == button.name)?.Activate();
+          var cheat = cheats.First(cheat => cheat.Name == button.name);
+
+          if (cheat is InfiniteHealth infiniteHealth)
+          {
+            if (infiniteHealth.isActive)
+            {
+              cheat.Deactivate();
+            }
+            else
+            {
+              cheat.Activate();
+            }
+          }
+          else
+          {
+            cheat.Activate();
+          }
         }
       }
     }

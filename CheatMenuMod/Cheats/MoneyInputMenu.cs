@@ -15,7 +15,7 @@ namespace CheatMenuMod.Cheats
     private readonly TextBox textBox;
     private readonly ClickableComponent okButton;
 
-    public MoneyInputMenu(AddMoney addMoney) : base(Game1.viewport.Width / 2 - 200, Game1.viewport.Height / 2 - 200, 400, 400, true)
+    public MoneyInputMenu(AddMoney addMoney) : base(Game1.viewport.Width / 2 - 200, Game1.viewport.Height / 2 - 200, 400, 400)
     {
       this.addMoney = addMoney;
 
@@ -30,18 +30,23 @@ namespace CheatMenuMod.Cheats
       Game1.keyboardDispatcher.Subscriber = textBox;
 
       okButton = new ClickableComponent(new Rectangle(xPositionOnScreen + 150,
-        yPositionOnScreen + 100, 100, 50), "OK");
+        yPositionOnScreen + 120, 100, 50), "OK");
     }
 
     public override void draw(SpriteBatch spriteBatch)
     {
       base.draw(spriteBatch);
 
+      // Draw the Modal.
       drawTextureBox(spriteBatch, xPositionOnScreen, yPositionOnScreen, width, height, Color.White);
       textBox.Draw(spriteBatch);
 
+      // Draw the OK button.
       drawTextureBox(spriteBatch, okButton.bounds.X, okButton.bounds.Y, okButton.bounds.Width, okButton.bounds.Height, Color.BlueViolet);
       SpriteText.drawString(spriteBatch, okButton.name, okButton.bounds.X + 20, okButton.bounds.Y + 20);
+
+      // Draw the mouse.
+      drawMouse(spriteBatch);
     }
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
