@@ -1,0 +1,10 @@
+{
+  "Name": "Cheat Menu Mod",
+  "Author": "Dwayne Meintjes - QuantumNeuron",
+  "Version": "1.0.0",
+  "Description": "A simple cheat menu for Stardew Valley.",
+  "UniqueID": "QuantumNeuron.CheatMenuMod",
+  "EntryDll": "CheatMenuMod.dll",
+  "MinimumApiVersion": "3.0.0",
+  "UpdateKeys": []
+}
