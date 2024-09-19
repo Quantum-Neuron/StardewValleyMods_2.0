@@ -21,6 +21,7 @@ namespace CheatMenuMod.Cheats
     {
       isActive = true;
       Game1.player.health = Game1.player.maxHealth;
+      Game1.addHUDMessage(new HUDMessage("Infinite Health Activated!", 1));
     }
 
     /// <summary>
@@ -29,6 +30,7 @@ namespace CheatMenuMod.Cheats
     public override void Deactivate()
     {
       isActive = false;
+      Game1.addHUDMessage(new HUDMessage("Infinite Health Deactivated!", 1));
     }
 
     /// <summary>

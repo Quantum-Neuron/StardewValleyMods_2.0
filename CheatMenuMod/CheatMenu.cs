@@ -15,6 +15,7 @@ namespace CheatMenuMod
     private readonly List<Cheat> cheats;
     private readonly List<ClickableComponent> buttons;
     private ClickableComponent? hoveredButton;
+    private ClickableComponent closeButton;
 
     /// <summary>
     /// Initialise the cheat menu.
@@ -22,19 +23,31 @@ namespace CheatMenuMod
     /// <param name="cheatMenuMod"></param>
     /// <param name="cheats"></param>
     public CheatMenu(CheatMenuMod cheatMenuMod, List<Cheat> cheats)
-        : base(Game1.viewport.Width / 2 - 200, Game1.viewport.Height / 2 - 200, 400, 400, true)
+        : base(Game1.viewport.Width / 2 - 200, Game1.viewport.Height / 2 - 200, 500, 500)
     {
       this.cheatMenuMod = cheatMenuMod;
       this.cheats = cheats;
       buttons = new List<ClickableComponent>();
 
+      // Initialise the close button.
+      closeButton = new ClickableComponent(new Rectangle(xPositionOnScreen + width - 50, yPositionOnScreen + 20, 40, 40), "Close");
+
+      InitialiseButtons();
+    }
+
+    /// <summary>
+    /// Initialises the buttons.
+    /// </summary>
+    private void InitialiseButtons()
+    {
+      buttons.Clear();
       var yOffset = 100;
 
       foreach (var cheat in cheats)
       {
         // Adjust the size of the buttons to be smaller
-        buttons.Add(new ClickableComponent(new Rectangle(xPositionOnScreen + 25, yPositionOnScreen + yOffset, 150, 40), cheat.Name));
-        yOffset += 50; // Adjust the offset to prevent overlap
+        buttons.Add(new ClickableComponent(new Rectangle(xPositionOnScreen + 25, yPositionOnScreen + yOffset, 40, 40), cheat.Name));
+        yOffset += 100; // Adjust the offset to prevent overlap
       }
     }
 
@@ -50,22 +63,37 @@ namespace CheatMenuMod
       drawTextureBox(spriteBatch, xPositionOnScreen, yPositionOnScreen, width, height, Color.White);
 
       // Draw the title.
-      SpriteText.drawString(spriteBatch, "Cheat Menu", xPositionOnScreen + 100, yPositionOnScreen + 50);
+      SpriteText.drawString(spriteBatch, "Cheat Menu", xPositionOnScreen + 100, yPositionOnScreen + 17);
 
       // Draw the buttons;
       foreach (var button in buttons)
       {
         Color buttonColor = button == hoveredButton ? Color.LightBlue : Color.BlueViolet;
-        drawTextureBox(spriteBatch, button.bounds.X, button.bounds.Y, button.bounds.Width, button.bounds.Height, buttonColor);
+
         // Adjust the text position to prevent overlap
-        SpriteText.drawString(spriteBatch, button.name, button.bounds.X + 10, button.bounds.Y + 10);
+        SpriteText.drawString(spriteBatch, button.name, button.bounds.X, button.bounds.Y - 20);
+
+        drawTextureBox(spriteBatch, button.bounds.X, button.bounds.Y + 20, button.bounds.Width, button.bounds.Height, buttonColor);
       }
+
+      // Draw the close button.
+      SpriteText.drawString(spriteBatch, "X", closeButton.bounds.X + 10, closeButton.bounds.Y + 10);
+
+      // Draw the mouse on the Cheat Menu.
+      drawMouse(spriteBatch);
     }
 
     public override void receiveLeftClick(int x, int y, bool playSound = true)
     {
       // Handle menu clicks.
       base.receiveLeftClick(x, y, playSound);
+
+      // Check if the close button was clicked.
+      if (closeButton.containsPoint(x, y))
+      {
+        Game1.exitActiveMenu();
+        return;
+      }
 
       foreach (var button in buttons)
       {
@@ -89,6 +117,22 @@ namespace CheatMenuMod
           break;
         }
       }
+    }
+
+    public override void gameWindowSizeChanged(Rectangle oldBounds, Rectangle newBounds)
+    {
+      base.gameWindowSizeChanged(oldBounds, newBounds);
+
+      // Update the position of the cheat menu.
+      xPositionOnScreen = Game1.viewport.Width / 2 - 200;
+      yPositionOnScreen = Game1.viewport.Height / 2 - 200;
+
+      // Update the position of the close button
+      closeButton.bounds.X = xPositionOnScreen + width - 50;
+      closeButton.bounds.Y = yPositionOnScreen + 20;
+
+      // Reinitialise the buttons to update their positions.
+      InitialiseButtons();
     }
   }
 }
