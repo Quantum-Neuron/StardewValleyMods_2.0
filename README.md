@@ -4,4 +4,6 @@ I am pursuing implementing a mod pack for Stardew Valley from a Cheat Menu to ne
 
 Please let me know if you have any suggestions.
 
-I hope you find yourself at home on my repo. :)
+**Cheat Mod Menu**
+Like the name says, a cheat menu to make the game easier for anyone who just wants to save some time.
+Enjoy :)
